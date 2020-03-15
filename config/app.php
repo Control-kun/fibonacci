@@ -120,6 +120,7 @@ return [
     */
 
     'key' => env('APP_KEY'),
+    'api_token' => env('API_TOKEN', 'null'),
 
     'cipher' => 'AES-256-CBC',
 
