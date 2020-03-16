@@ -8,13 +8,13 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 class ApiAuthenticate extends Middleware
 {
     /**
-     * Get the path the user should be redirected to when they are not authenticated.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return string|null
+     * @param \Illuminate\Http\Request $request
+     * @param Closure $next
+     * @param mixed ...$guards
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|mixed
      */
 
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, ...$guards)
     {
         if ('Bearer ' . \Config::get('app.api_token') != $request->header('Authorization')) {
             return response('Unauthenticated', 401);

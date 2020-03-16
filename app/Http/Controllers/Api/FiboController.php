@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class FiboController extends Controller
@@ -23,10 +24,14 @@ class FiboController extends Controller
             return response()->json(['error' => $validator->errors()->toJson()], 422);
         }
 
-        $result = [];
-        foreach ($this->fibonacci($request->from, $request->to) as $fib) {
-            $result[] = $fib;
-        }
+        $cacheName = 'fibo_' . $request->from . '_' . $request->to;
+
+        $result = Cache::rememberForever($cacheName, function () use($request) {
+            foreach ($this->fibonacci($request->from, $request->to) as $fib) {
+                $result[] = $fib;
+            }
+            return $result;
+        });
 
         return response()
             ->json(['data' => $result], 200);
